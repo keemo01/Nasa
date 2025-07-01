@@ -1,0 +1,58 @@
+.app-header {
+    background-color: #1e293b; /* slate-900 */
+    padding: 1.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border-bottom-left-radius: 1.5rem;
+    border-bottom-right-radius: 1.5rem;
+    margin: 1rem 1rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@media (min-width: 640px) { /* sm breakpoint */
+    .app-header {
+        flex-direction: row;
+    }
+}
+
+.app-header .logo-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+    .app-header .logo-group {
+        margin-bottom: 0;
+    }
+}
+
+.app-header .logo {
+    height: 3rem;
+    width: 3rem;
+    margin-right: 1rem;
+    color: #a78bfa;
+}
+
+.app-header h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #a78bfa; /* purple-400 as primary color */
+}
+
+.app-header .user-id {
+    font-size: 0.875rem;
+    color: #9ca3af; 
+    background-color: #1f2937; 
+    padding: 0.5rem 1rem;
+    border-radius: 9999px; /* rounded-full */
+    border: 1px solid #8b5cf6; 
+}
+
+.app-header .user-id span {
+    font-family: monospace;
+    color: #60a5fa;
+    letter-spacing: 0.05em;
+}

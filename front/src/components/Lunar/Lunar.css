@@ -1,0 +1,77 @@
+/* src/components/Lunar/Lunar.css */
+
+.lunar-surface-3d-wrapper {
+    width: 100%;
+    height: 100%; /* Ensure it takes full height of its flex parent (.left-panel) */
+    min-height: 400px; /* Redundant if .left-panel has it, but good fallback */
+    position: relative; /* Needed for absolute positioning of title and overlay */
+}
+
+.lunar-canvas-container {
+    width: 100%;
+    height: 100%;
+    /* The Three.js canvas will be appended here */
+}
+
+.lunar-canvas-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+.lunar-surface-title {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    font-size: 1.875rem;
+    font-weight: bold;
+    color: #a78bfa;
+    z-index: 10;
+    padding: 0.75rem;
+    background-color: rgba(30, 41, 59, 0.8);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.viper-overlay {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    right: 1.5rem;
+    padding: 1.25rem;
+    background-color: rgba(30, 41, 59, 0.85);
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #334155;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.viper-overlay p {
+    color: #60a5fa;
+    margin-bottom: 0.25rem;
+}
+
+.viper-overlay p span {
+    font-weight: 600;
+}
+
+.viper-overlay .progress-bar-container {
+    width: 100%;
+    background-color: #334155;
+    border-radius: 9999px;
+    height: 0.625rem;
+    margin-top: 0.75rem;
+}
+
+.viper-overlay .progress-bar-fill {
+    background-color: #a78bfa;
+    height: 0.625rem;
+    border-radius: 9999px;
+}
+
+.viper-overlay .progress-text {
+    text-align: right;
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}

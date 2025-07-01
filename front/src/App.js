@@ -1,57 +1,67 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
+import useNasaApod from './hooks/useNasaApod';
+import './styles/App.css'; // Corrected import path for the main App.css
 
-function App() {
-  const [apod, setApod] = useState(null);
-  const [error, setError] = useState(null); // State to hold any errors
+// Components
+import Header from './components/Header/Header'; // Correct path
+import Footer from './components/Footer/Footer'; // Correct path
+import Timeline from './components/Timeline/Timeline'; // Correct path based on screenshot
+import Lunar from './components/Lunar/Lunar'; // Corrected path and component name
+import Mission from './components/Mission/MissionLog'; // Corrected path and component name (assuming Mission.js)
+import Facts from './components/Facts/Facts'; // Corrected path and component name
+import Apod from './components/Apod/Apod'; // Corrected path and component name
 
-  useEffect(() => {
-    const fetchApod = async () => {
-      try {
-        const res = await axios.get('http://localhost:5001/api/apod');
-        setApod(res.data);
-      } catch (err) {
-        console.error("Error fetching APOD from backend:", err);
-        setError("Failed to load Astronomy Picture of the Day. Please try again later.");
-      }
-    };
+const App = () => {
+    // Fetch APOD data at the top-level
+    const { apodData, loading: apodLoading, error: apodError } = useNasaApod();
 
-    fetchApod();
-  }, []); // Empty dependency array means this runs once on component mount
+    // Simulated user ID for demonstration
+    const userId = "lunar-explorer-alpha-7";
 
-  return (
-    <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '800px', margin: '20px auto', padding: '20px', border: '1px solid #ddd', borderRadius: '8px' }}>
-      <h1 style={{ textAlign: 'center', color: '#333' }}>NASA Astronomy Picture of the Day</h1>
+    // App-level loading state (e.g., initial data fetch)
+    if (apodLoading) {
+        return (
+            <div className="app-loading">
+                <div className="spinner"></div>
+                <p>Initiating Lunar Watch Systems...</p>
+            </div>
+        );
+    }
 
-      {error && (
-        <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
-      )}
+    // App-level error state
+    if (apodError) {
+        return (
+            <div className="app-error">
+                <h1>Connection Lost</h1>
+                <p>An error occurred while fetching data from NASA.</p>
+                <p className="error-code">Error: {apodError.message}</p>
+                <p className="error-footer">Please check your network connection or try again later.</p>
+            </div>
+        );
+    }
 
-      {!apod && !error && (
-        <p style={{ textAlign: 'center', color: '#666' }}>Loading...</p>
-      )}
+    // Main application structure
+    return (
+        <div className="app-container">
+            <Header userId={userId} />
 
-      {apod && (
-        <div style={{ marginTop: '20px' }}>
-          <h2 style={{ color: '#0056b3', marginBottom: '10px' }}>{apod.title}</h2>
-          {apod.media_type === 'image' ? (
-            <img 
-              src={apod.url} 
-              alt={apod.title} 
-              style={{ maxWidth: '100%', height: 'auto', display: 'block', margin: '0 auto', borderRadius: '4px' }} 
-            />
-          ) : (
-            <p>Content is not an image Media Type: {apod.media_type}</p>
-          )}
-          <p style={{ lineHeight: '1.6', color: '#555', marginTop: '15px' }}>{apod.explanation}</p>
-          {apod.copyright && (
-            <p style={{ fontSize: '0.9em', color: '#777', textAlign: 'right' }}>Copyright: {apod.copyright}</p>
-          )}
-          <p style={{ fontSize: '0.9em', color: '#777', textAlign: 'right' }}>Date: {apod.date}</p>
+            <main className="main-content">
+                <section className="left-panel">
+                    {/* Lunar component now self-contains its title and overlay */}
+                    <Lunar />
+                </section>
+
+                <aside className="right-panel">
+                    <Apod apodData={apodData} loading={apodLoading} error={apodError} />
+                    <Mission />
+                    <Facts />
+                </aside>
+            </main>
+
+            <Timeline />
+            <Footer />
         </div>
-      )}
-    </div>
-  );
-}
+    );
+};
 
 export default App;
