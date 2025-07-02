@@ -1,16 +1,38 @@
-/* src/components/Lunar/Lunar.css */
+/* front/src/components/Lunar/Lunar.css */
 
 .lunar-surface-3d-wrapper {
     width: 100%;
-    height: 100%; /* Ensure it takes full height of its flex parent (.left-panel) */
-    min-height: 400px; /* Redundant if .left-panel has it, but good fallback */
-    position: relative; /* Needed for absolute positioning of title and overlay */
+    height: 100%;
+    position: relative; /* Crucial: The sticky element needs a positioned ancestor */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+}
+
+.lunar-surface-title {
+    position: absolute;
+    top: 2rem;
+    left: 2.5rem;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #e6edf3;
+    z-index: 10;
+    padding: 0.8rem 1.5rem;
+    background-color: rgba(30, 41, 59, 0.95);
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 .lunar-canvas-container {
+    flex-grow: 1;
     width: 100%;
-    height: 100%;
-    /* The Three.js canvas will be appended here */
+    /* Padding to create a safe zone around the 3D content */
+    padding: 3rem 2rem; /* Keep this padding */
+    box-sizing: border-box;
+    /* IMPORTANT: If the canvas itself has content that scrolls,
+       you might need to adjust this, but for 3D, the canvas itself
+       doesn't scroll, its parent does. */
 }
 
 .lunar-canvas-container canvas {
@@ -19,59 +41,56 @@
     display: block;
 }
 
-.lunar-surface-title {
-    position: absolute;
-    top: 1.5rem;
-    left: 1.5rem;
-    font-size: 1.875rem;
-    font-weight: bold;
-    color: #a78bfa;
-    z-index: 10;
-    padding: 0.75rem;
-    background-color: rgba(30, 41, 59, 0.8);
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
 .viper-overlay {
-    position: absolute;
-    bottom: 1.5rem;
-    left: 1.5rem;
-    right: 1.5rem;
-    padding: 1.25rem;
-    background-color: rgba(30, 41, 59, 0.85);
-    border-radius: 0.75rem;
-    font-size: 1rem;
-    border: 1px solid #334155;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    /* CHANGED: From position: absolute to position: sticky */
+    position: sticky;
+    bottom: 0; /* Stick to the bottom of its scrollable parent */
+    left: 0; /* Align to the left */
+    right: 0; /* Align to the right */
+    /* Adjust padding to create space from the actual bottom edge of the wrapper */
+    padding: 1.5rem 2.5rem; /* Increased padding slightly for better visual separation */
+    
+    background-color: rgba(30, 41, 59, 0.95); /* Solid background for text visibility */
+    border-top: 1px solid #475569; /* Add a top border to separate it visually from content */
+    border-radius: 0 0 1rem 1rem; /* Only bottom corners rounded if it spans full width */
+    font-size: 1.1rem;
+    box-shadow: 0 -6px 12px rgba(0, 0, 0, 0.3); /* Shadow on top to indicate it's floating */
+    z-index: 10; /* Ensure it stays above other content */
+    color: #c9b1f7;
+    /* Ensure it takes full width of its parent */
+    width: 100%;
+    box-sizing: border-box; /* Include padding in width */
 }
 
 .viper-overlay p {
-    color: #60a5fa;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
 }
 
 .viper-overlay p span {
-    font-weight: 600;
+    font-weight: 700;
+    color: #60a5fa;
 }
 
-.viper-overlay .progress-bar-container {
+.progress-bar-container {
     width: 100%;
     background-color: #334155;
     border-radius: 9999px;
-    height: 0.625rem;
-    margin-top: 0.75rem;
+    height: 0.8rem;
+    margin-top: 1rem;
+    overflow: hidden;
 }
 
-.viper-overlay .progress-bar-fill {
-    background-color: #a78bfa;
-    height: 0.625rem;
+.progress-bar-fill {
+    background: linear-gradient(to right, #8b5cf6, #a78bfa);
+    height: 100%;
     border-radius: 9999px;
+    transition: width 0.5s ease-in-out;
 }
 
-.viper-overlay .progress-text {
+.progress-text {
     text-align: right;
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin-top: 0.25rem;
+    font-size: 0.9rem;
+    color: #909ba8;
+    margin-top: 0.5rem;
+    font-weight: 600;
 }

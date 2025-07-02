@@ -1,42 +1,48 @@
+/* front/src/styles/App.css */
+
+/* Global Base Styles */
 body {
     margin: 0;
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #0f172a;
-    color: #f3f4f6;
+    background-color: #0d1117; /* Slightly darker background for more contrast */
+    color: #e6edf3; /* Lighter text for better contrast on dark background */
 }
 
+/* Custom Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
     width: 8px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-    background: #374151;
+    background: #21262d; /* Darker track */
     border-radius: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #a78bfa;
+    background-color: #9258f3; /* Slightly brighter purple for thumb */
     border-radius: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: #8b5cf6;
+    background-color: #7b40d3; /* Darker hover state */
 }
 
+/* App Container */
 .app-container {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
+/* App-level Loading and Error States */
 .app-loading, .app-error {
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background-color: #0f172a;
+    background-color: #0d1117; /* Darker background */
     color: #60a5fa;
     padding: 2rem;
     text-align: center;
@@ -60,8 +66,9 @@ body {
 
 .app-loading p {
     margin-left: 1.5rem;
-    font-size: 1.5rem;
+    font-size: 1.8rem; /* Slightly larger */
     font-weight: 300;
+    color: #8b5cf6; /* Purple loading text */
 }
 
 .app-error {
@@ -70,64 +77,69 @@ body {
 }
 
 .app-error h1 {
-    font-size: 2.25rem;
+    font-size: 2.5rem; /* Slightly larger */
     font-weight: bold;
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
 }
 
 .app-error p {
-    font-size: 1.25rem;
+    font-size: 1.3rem; /* Slightly larger */
     margin-bottom: 1rem;
 }
 
 .app-error .error-code {
-    font-size: 1.125rem;
+    font-size: 1.15rem; /* Slightly larger */
     font-family: monospace;
-    background-color: #1f2937;
-    padding: 1rem;
-    border-radius: 0.375rem;
-    color: #d1d5db;
+    background-color: #1a1f26; /* Darker background */
+    padding: 1.2rem;
+    border-radius: 0.5rem;
+    color: #e6edf3; /* Lighter text */
+    border: 1px solid #30363d; /* Subtle border */
 }
 
 .app-error .error-footer {
-    margin-top: 1.5rem;
-    color: #9ca3af;
+    margin-top: 1.8rem; /* More space */
+    color: #909ba8; /* Slightly darker gray */
 }
 
-.main-content {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 1.5rem;
-    gap: 1.5rem;
+/* Main Page Content Wrapper (for routed pages) */
+.main-page-content-wrapper {
+    flex-grow: 1; /* Allows the content area to expand */
+    display: flex; /* Ensures pages can lay out as flex children */
+    flex-direction: column; /* Default stack, pages will control their internal layout */
+    padding: 1.5rem; /* Consistent padding around the main content area */
 }
 
-@media (min-width: 1024px) {
-    .main-content {
-        flex-direction: row;
-        gap: 1.5rem;
-        align-items: stretch;
-    }
-}
-
-.left-panel {
-    position: relative;
-    flex-grow: 5; /* Increased */
-    flex-basis: 70%; /* Increased */
-    min-height: 400px;
-    background-color: #1e293b;
-    border-radius: 1rem;
+/* Timeline Section (Global) */
+.timeline-section {
+    background-color: #1e293b; /* slate-900 */
+    padding: 2rem;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
-    border: 1px solid #334155;
-    display: flex;
-    flex-direction: column;
+    border-radius: 1rem;
+    margin: 1.5rem 1.5rem 1.5rem;
+    border: 1px solid #334155; /* slate-700 */
 }
 
-.right-panel {
+.timeline-section h3 {
+    font-size: 1.875rem;
+    font-weight: bold;
+    color: #a78bfa; /* purple-300 */
+    margin-bottom: 1.25rem;
+}
+
+.timeline-placeholder {
+    width: 100%;
+    height: 4rem;
+    background-color: #1f2937; /* slate-800 */
+    border-radius: 9999px; /* rounded-full */
     display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    flex-basis: 30%; /* Decreased */
-    gap: 1.5rem;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af; /* gray-400 */
+    border: 1px solid #334155; /* slate-700 */
+}
+
+.timeline-placeholder p {
+    font-size: 1.125rem;
+    font-weight: 300;
 }

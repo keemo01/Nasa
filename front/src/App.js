@@ -1,24 +1,25 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
 import useNasaApod from './hooks/useNasaApod';
-import './styles/App.css'; // Corrected import path for the main App.css
 
-// Components
-import Header from './components/Header/Header'; // Correct path
-import Footer from './components/Footer/Footer'; // Correct path
-import Timeline from './components/Timeline/Timeline'; // Correct path based on screenshot
-import Lunar from './components/Lunar/Lunar'; // Corrected path and component name
-import Mission from './components/Mission/MissionLog'; // Corrected path and component name (assuming Mission.js)
-import Facts from './components/Facts/Facts'; // Corrected path and component name
-import Apod from './components/Apod/Apod'; // Corrected path and component name
+// Global Styles
+import './styles/App.css'; // Consolidated global and layout styles
+
+// Components (Top-level layout elements)
+import Header from './components/Header/Header';
+import Footer from './components/Footer/Footer';
+import Timeline from './components/Timeline/Timeline'; // Keep if you want to display it on all pages, or move to a specific route
+
+// Page Components
+import HomePage from './pages/Home/HomePage';
+import ApodPage from './pages/ApodPage/ApodPage';
+import MoonPage from './pages/Moon/MoonPage';
+import MarsRoverPhotosPage from './pages/Mars/RoverPage'
 
 const App = () => {
-    // Fetch APOD data at the top-level
     const { apodData, loading: apodLoading, error: apodError } = useNasaApod();
-
-    // Simulated user ID for demonstration
     const userId = "lunar-explorer-alpha-7";
 
-    // App-level loading state (e.g., initial data fetch)
     if (apodLoading) {
         return (
             <div className="app-loading">
@@ -28,7 +29,6 @@ const App = () => {
         );
     }
 
-    // App-level error state
     if (apodError) {
         return (
             <div className="app-error">
@@ -40,27 +40,24 @@ const App = () => {
         );
     }
 
-    // Main application structure
     return (
-        <div className="app-container">
-            <Header userId={userId} />
+        <Router>
+            <div className="app-container">
+                <Header userId={userId} />
 
-            <main className="main-content">
-                <section className="left-panel">
-                    {/* Lunar component now self-contains its title and overlay */}
-                    <Lunar />
-                </section>
+                <div className="main-page-content-wrapper">
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/apod" element={<ApodPage apodData={apodData} loading={apodLoading} error={apodError} />} />
+                        <Route path="/moon" element={<MoonPage />} />
+                        <Route path="/mars-rover-photos" element={<MarsRoverPhotosPage />} /> {/* NEW: Route for Mars Rover Photos */}
+                    </Routes>
+                </div>
 
-                <aside className="right-panel">
-                    <Apod apodData={apodData} loading={apodLoading} error={apodError} />
-                    <Mission />
-                    <Facts />
-                </aside>
-            </main>
-
-            <Timeline />
-            <Footer />
-        </div>
+                 <Timeline /> 
+                <Footer />
+            </div>
+        </Router>
     );
 };
 

@@ -1,22 +1,20 @@
-/* src/components/Apod/Apod.css */
-
-/* Apod Card Panel - Note: Mission and Facts also have similar "card-panel" styles, consider a shared CSS file if you want to avoid duplication. For now, this is specific. */
+/* Common Card Panel Styles */
 .apod-card-panel {
-    background-color: #1e293b; /* slate-900 */
-    border-radius: 1rem; /* rounded-2xl */
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05); /* shadow-2xl */
-    padding: 1.75rem; /* p-7 */
-    flex-grow: 1; /* Allows it to grow within the right-panel */
-    border: 1px solid #334155; /* slate-700 */
+    background-color: #1e293b;
+    border-radius: 1rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    padding: 1.75rem;
+    flex-grow: 1;
+    border: 1px solid #334155;
     display: flex; /* Make it a flex container */
     flex-direction: column; /* Stack children vertically */
 }
 
 .apod-card-panel h3 {
-    font-size: 1.875rem; /* 3xl */
+    font-size: 1.875rem;
     font-weight: bold;
-    color: #a78bfa; /* purple-300 */
-    margin-bottom: 1.25rem; /* mb-5 */
+    color: #a78bfa;
+    margin-bottom: 1.25rem;
 }
 
 /* APOD Display Specifics */
@@ -25,14 +23,14 @@
     align-items: center;
     justify-content: center;
     min-height: 100px;
-    color: #9ca3af; /* gray-400 */
+    color: #9ca3af;
     font-size: 1.125rem;
     text-align: center;
-    flex-grow: 1; /* Allow these states to fill remaining card space */
+    flex-grow: 1;
 }
 
 .apod-error {
-    color: #ef4444; /* red-400 */
+    color: #ef4444;
     flex-direction: column;
 }
 
@@ -43,7 +41,7 @@
 
 .apod-error p:last-child {
     font-size: 0.875rem;
-    color: #6b7280; /* gray-500 */
+    color: #6b7280;
 }
 
 .apod-content {
@@ -51,21 +49,33 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    flex-grow: 1; /* Allows content to grow */
+    flex-grow: 1; /* Allows content to grow and push elements apart if needed */
 }
 
-.apod-content img {
-    width: 100%;
-    height: 14rem; /* h-56 */
-    object-fit: cover;
+/* New: Container for the APOD image to control aspect ratio */
+.apod-image-container {
+    width: 100%; /* Take full width of its parent */
+    aspect-ratio: 16 / 9; /* Define a widescreen aspect ratio for the image container */
+    overflow: hidden; /* Hide parts of the image that go beyond the container if object-fit is 'cover' */
     border-radius: 0.75rem; /* rounded-xl */
-    margin-bottom: 1.5rem; /* mb-6 */
+    margin-bottom: 1.5rem;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
     border: 1px solid #334155; /* slate-700 */
-    transition: transform 0.3s ease-in-out;
+    display: flex; /* Use flex to center the image within the container if object-fit: contain */
+    justify-content: center;
+    align-items: center;
 }
 
-.apod-content img:hover {
+/* Styles for the image inside its new container */
+.apod-image-container .apod-image {
+    width: 100%; /* Image fills the container's width */
+    height: 100%; /* Image fills the container's height */
+    object-fit: cover; /* Image will cover the container, cropping if necessary */
+    /* If you prefer to see the entire image without cropping, use object-fit: contain; */
+    transition: transform 0.3s ease-in-out; /* Keep the hover effect */
+}
+
+.apod-image-container .apod-image:hover {
     transform: scale(1.05);
 }
 

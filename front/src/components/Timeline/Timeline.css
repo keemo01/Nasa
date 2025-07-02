@@ -1,32 +1,298 @@
+/* Base styling for the timeline section */
 .timeline-section {
-    background-color: #1e293b; 
-    padding: 2rem;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-    border-radius: 1rem;
-    margin: 1.5rem 1.5rem 1.5rem;
-    border: 1px solid #334155; 
+    background-color: #1e293b; /* A dark slate background */
+    padding: 2.5rem 1.5rem; /* Increased padding for better spacing */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
+    border-radius: 1rem; /* Rounded corners */
+    margin: 2rem auto; /* Center the section with vertical margin */
+    max-width: 900px; /* Limit max width for better readability on large screens */
+    border: 1px solid #334155; /* A subtle border */
+    font-family: 'Inter', sans-serif; /* Using Inter font */
 }
 
+/* Heading style */
 .timeline-section h3 {
-    font-size: 1.875rem;
-    font-weight: bold;
-    color: #a78bfa; 
-    margin-bottom: 1.25rem;
+    font-size: 2.25rem; /* Larger font size for the main heading */
+    font-weight: 700; /* Bold font weight */
+    color: #a78bfa; /* A vibrant purple color */
+    margin-bottom: 2.5rem; /* More space below the heading */
+    text-align: center; /* Center the heading text */
+    letter-spacing: -0.025em; /* Slightly tighter letter spacing */
 }
 
-.timeline-placeholder {
-    width: 100%;
-    height: 4rem;
-    background-color: #1f2937; 
-    border-radius: 9999px; /* rounded-full */
+/* Controls container */
+.timeline-controls {
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+    gap: 1rem; /* Space between controls */
+    justify-content: center; /* Center controls */
+    margin-bottom: 2rem; /* Space below controls */
+    padding: 0 1rem; /* Add some padding */
+}
+
+.timeline-search-input,
+.timeline-filter-select {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #475569; /* slate-600 */
+    background-color: #1f2937; /* slate-800 */
+    color: #e2e8f0; /* Light text */
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+    flex-grow: 1; /* Allow inputs to grow */
+    max-width: 300px; /* Limit max width for inputs */
+}
+
+.timeline-search-input::placeholder {
+    color: #94a3b8; /* slate-400 */
+}
+
+.timeline-search-input:focus,
+.timeline-filter-select:focus {
+    border-color: #60a5fa; /* sky-300 */
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
+}
+
+.timeline-filter-select {
+    cursor: pointer;
+    /* Custom arrow for select */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23e2e8f0" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.5em;
+    padding-right: 2.5rem; /* Make space for the custom arrow */
+}
+
+.timeline-filter-select option {
+    background-color: #1f2937; /* slate-800 for options */
+    color: #e2e8f0;
+}
+
+
+.timeline-clear-button {
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    border: none;
+    background: linear-gradient(135deg, #a78bfa, #8b5cf6); /* Purple gradient */
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.timeline-clear-button:hover {
+    background: linear-gradient(135deg, #8b5cf6, #6d28d9); /* Darker purple on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px -2px rgba(0, 0, 0, 0.15), 0 3px 6px -2px rgba(0, 0, 0, 0.08);
+}
+
+/* Container for the timeline items */
+.timeline-container {
+    position: relative;
+    padding: 1rem 0;
+}
+
+/* Vertical line in the middle of the timeline */
+.timeline-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%; /* Central line */
+    width: 3px; /* Slightly thicker line */
+    height: 100%;
+    background-color: #475569; /* Slate gray color for the line */
+    transform: translateX(-50%); /* Center the line */
+    z-index: 0; /* Ensure the line is behind content */
+    border-radius: 2px; /* Slightly rounded ends for the line */
+}
+
+/* Individual timeline item */
+.timeline-item {
+    display: flex;
+    justify-content: space-between; /* Distribute space between circle and content */
+    align-items: center; /* Vertically align items */
+    margin-bottom: 3rem; /* Increased space between items */
+    position: relative;
+    z-index: 1; /* Ensure content is above the line */
+}
+
+/* Alternating direction for odd timeline items */
+.timeline-item:nth-child(odd) {
+    flex-direction: row-reverse; /* Content on the left, circle on the right */
+}
+
+/* Date circle styling */
+.timeline-date-circle {
+    width: 6.5rem; /* Larger circle size */
+    height: 6.5rem; /* Larger circle size */
+    background: linear-gradient(135deg, #60a5fa, #3b82f6); /* Gradient background */
+    border-radius: 50%; /* Perfect circle */
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #9ca3af;
-    border: 1px solid #334155; 
+    color: #e2e8f0; /* Light text color */
+    font-weight: 700; /* Bold font weight */
+    font-size: 1.35rem; /* Larger font for date */
+    flex-shrink: 0; /* Prevent shrinking */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.15); /* Stronger shadow */
+    border: 3px solid #93c5fd; /* A lighter blue border */
+    position: absolute; /* Position relative to .timeline-item */
+    left: 50%; /* Align to the central line */
+    transform: translateX(-50%); /* Center on the line */
+    z-index: 2;
+    transition: all 0.3s ease-in-out; /* Smooth transition for hover effects */
+}
+
+.timeline-date-circle:hover {
+    transform: scale(1.08) translateX(-50%); /* Maintain centering while scaling */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35), 0 4px 8px rgba(0, 0, 0, 0.2); /* Enhance shadow on hover */
+}
+
+/* Content box styling */
+.timeline-content-box {
+    background-color: #334155; /* Slate gray background */
+    padding: 1.5rem; /* Increased padding */
+    border-radius: 0.75rem; /* Rounded corners */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    flex-grow: 1;
+    max-width: calc(50% - 5rem); /* Half width minus space for circle and gap */
+    text-align: left;
+    border: 1px solid #475569; /* Subtle border */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth transitions */
+}
+
+/* Margins for content boxes based on their position relative to the central line */
+.timeline-item:nth-child(even) .timeline-content-box {
+    margin-right: 2rem; /* Space between content and circle for even items (content on left) */
+}
+
+.timeline-item:nth-child(odd) .timeline-content-box {
+    margin-left: 2rem; /* Space between content and circle for odd items (content on right) */
+}
+
+/* Hover effect for content box */
+.timeline-content-box:hover {
+    transform: translateY(-8px); /* Lift up on hover */
+    box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.25), 0 6px 10px -4px rgba(0, 0, 0, 0.1); /* Stronger shadow on hover */
+}
+
+/* Title within content box */
+.timeline-content-box h4 {
+    font-size: 1.375rem; /* Slightly larger title */
+    color: #93c5fd; /* Light blue color */
+    margin-bottom: 0.65rem; /* Space below title */
+    font-weight: 600; /* Semi-bold */
+    line-height: 1.3;
+}
+
+/* Description within content box */
+.timeline-content-box p {
+    font-size: 1rem; /* Standard paragraph font size */
+    color: #cbd5e1; /* Light gray text color */
+    line-height: 1.6; /* Improved readability */
+}
+
+/* Placeholder styles for no matching events */
+.timeline-placeholder {
+    width: 100%;
+    height: 8rem; /* Increased height for better visibility */
+    background-color: #1f2937; /* Darker slate background */
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af; /* Gray text color */
+    border: 1px solid #334155;
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem; /* Space between controls and placeholder */
 }
 
 .timeline-placeholder p {
-    font-size: 1.125rem;
-    font-weight: 300; 
+    font-size: 1.25rem; /* Larger font for placeholder text */
+    font-weight: 300;
+    margin: 0.5rem 0;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .timeline-container::before {
+        left: 20px; /* Move vertical line to the left */
+        transform: translateX(0);
+    }
+
+    .timeline-item {
+        flex-direction: column; /* Stack items vertically */
+        align-items: flex-start; /* Align all items to the start */
+        margin-bottom: 2.5rem; /* Adjust margin for smaller screens */
+    }
+
+    /* Ensure circles are aligned to the left line on smaller screens */
+    .timeline-date-circle {
+        position: absolute; /* Keep absolute positioning */
+        left: 20px; /* Align to the left line */
+        transform: translateX(-50%); /* Half circle off the line */
+        width: 5.5rem;
+        height: 5.5rem;
+        font-size: 1.1rem;
+        margin-bottom: 0; /* No margin-bottom needed here */
+        top: 0; /* Align to the top of the item */
+    }
+
+    .timeline-content-box {
+        max-width: calc(100% - 40px); /* Full width minus line offset */
+        margin-left: 40px; /* Push content to the right of the line */
+        margin-right: 0; /* Ensure no extra margin */
+    }
+
+    .timeline-item:nth-child(odd) .timeline-content-box {
+        margin-right: 0; /* Ensure no extra margin */
+    }
+
+    .timeline-item:nth-child(even) .timeline-content-box {
+        margin-left: 40px; /* Ensure consistent margin */
+    }
+
+    .timeline-controls {
+        flex-direction: column; /* Stack controls vertically */
+        align-items: stretch; /* Stretch controls to full width */
+    }
+
+    .timeline-search-input,
+    .timeline-filter-select {
+        max-width: 100%; /* Full width on small screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .timeline-section {
+        padding: 1.5rem;
+        margin: 1rem auto;
+    }
+
+    .timeline-section h3 {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+    }
+
+    .timeline-date-circle {
+        width: 4.8rem;
+        height: 4.8rem;
+        font-size: 1rem;
+    }
+
+    .timeline-content-box h4 {
+        font-size: 1.2rem;
+    }
+
+    .timeline-content-box p {
+        font-size: 0.9rem;
+    }
 }

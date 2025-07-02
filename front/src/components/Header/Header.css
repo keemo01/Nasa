@@ -1,58 +1,122 @@
+/* front/src/components/Header/Header.css */
 .app-header {
     background-color: #1e293b; /* slate-900 */
-    padding: 1.5rem;
+    padding: 1.5rem 1rem; /* Adjusted padding for top/bottom and sides */
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     border-bottom-left-radius: 1.5rem;
     border-bottom-right-radius: 1.5rem;
-    margin: 1rem 1rem 0;
+    margin: 1rem 1rem 0; /* mx-4 mt-4 */
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column; /* Stack logo/user-id row and nav below it */
+    align-items: center; /* Center content horizontally */
+    gap: 1rem; /* Space between the top row and the nav */
 }
 
 @media (min-width: 640px) { /* sm breakpoint */
     .app-header {
-        flex-direction: row;
+        padding: 1rem 1.5rem; /* More horizontal padding on larger screens */
     }
 }
 
-.app-header .logo-group {
+.header-top-row { /* New wrapper for logo and user ID */
+    width: 100%; /* Take full width within header */
+    display: flex;
+    flex-direction: column; /* Stack logo and user ID by default */
+    align-items: center; /* Center them */
+    justify-content: space-between;
+    gap: 0.8rem; /* Space between logo group and user ID on small screens */
+}
+
+@media (min-width: 640px) { /* sm breakpoint */
+    .header-top-row {
+        flex-direction: row; /* Row layout on larger screens */
+        gap: 1.5rem; /* Standard gap */
+    }
+}
+
+.logo-group {
     display: flex;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 0; /* No bottom margin, flex gap handles spacing */
 }
 
-@media (min-width: 640px) {
-    .app-header .logo-group {
-        margin-bottom: 0;
-    }
-}
-
-.app-header .logo {
+.logo {
     height: 3rem;
     width: 3rem;
-    margin-right: 1rem;
-    color: #a78bfa;
+    margin-right: 0.8rem; /* Slightly less margin to bring closer to text */
+    color: #a78bfa; /* purple-400 - for SVG fill */
 }
 
-.app-header h1 {
-    font-size: 3rem;
+.logo-group h1 {
+    font-size: 2.8rem; /* Slightly smaller for better fit, was 3rem */
     font-weight: 800;
     color: #a78bfa; /* purple-400 as primary color */
 }
 
-.app-header .user-id {
-    font-size: 0.875rem;
-    color: #9ca3af; 
-    background-color: #1f2937; 
-    padding: 0.5rem 1rem;
-    border-radius: 9999px; /* rounded-full */
-    border: 1px solid #8b5cf6; 
+.user-id {
+    font-size: 0.8rem; /* Slightly smaller for less prominence */
+    color: #9ca3af;
+    background-color: #1f2937;
+    padding: 0.4rem 0.9rem; /* Slightly less padding */
+    border-radius: 9999px;
+    border: 1px solid #8b5cf6;
 }
 
-.app-header .user-id span {
+.user-id span {
     font-family: monospace;
     color: #60a5fa;
     letter-spacing: 0.05em;
+}
+
+/* Navigation Links within Header */
+.main-nav-in-header { /* This is the new nav class in Header.js */
+    display: flex;
+    flex-wrap: wrap; /* Allow links to wrap on small screens */
+    justify-content: center;
+    gap: 1rem; /* Space between nav links */
+    width: 100%; /* Take full width of header */
+    padding-top: 0.5rem; /* Add some padding above links */
+    border-top: 1px solid rgba(51, 65, 85, 0.3); /* Subtle separator from top row */
+    margin-top: 1rem; /* More explicit space from top row */
+}
+
+@media (min-width: 768px) { /* md breakpoint for horizontal nav */
+    .main-nav-in-header {
+        justify-content: flex-end; /* Align links to the right on larger screens */
+        padding-top: 0; /* Remove top padding if next to logo */
+        border-top: none; /* No border if next to logo */
+        margin-top: 0;
+        flex-grow: 1; /* Allow it to take available space */
+        gap: 1.5rem; /* More gap */
+    }
+    .app-header { /* Adjust header for horizontal layout on larger screens */
+        flex-direction: row; /* Layout logo/nav/user-id in a row */
+        justify-content: space-between; /* Distribute items */
+        align-items: center;
+        gap: 1.5rem; /* Space between main elements */
+    }
+}
+
+.nav-link {
+    color: #a78bfa;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.6rem 1.1rem;
+    border-radius: 0.4rem;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+    font-size: 0.95rem; /* Slightly smaller for nav links */
+    white-space: nowrap; /* Prevent links from breaking */
+}
+
+.nav-link:hover {
+    background-color: #334155;
+    color: #c9b1f7;
+    transform: translateY(-1px);
+}
+
+.nav-link.active-nav-link {
+    background-color: #8b5cf6;
+    color: white;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
 }
