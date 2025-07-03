@@ -15,8 +15,7 @@ const AsteroidTracker = () => {
     const [displayedAsteroids, setDisplayedAsteroids] = useState([]);
     const [asteroidsToShow, setAsteroidsToShow] = useState(10);
 
-    // --- CHANGE THIS SECTION ---
-    // This makes the backend URL dynamic for development vs. production.
+  
     const BACKEND_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'https://nasa-dcn0.onrender.com';
 
     // I'm adding a new entry to the mission log.

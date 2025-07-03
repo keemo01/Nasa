@@ -49,7 +49,7 @@ const RoverPage = () => {
         setPhotosToShow(12);
 
         try {
-            // I'm calling the backend endpoint to fetch photos using the full URL.
+            // I'm calling the backend endpoint to fetch photos using the full URL
             let backendUrl = `${BACKEND_BASE_URL}/api/mars-rover-photos?rover=${rover}&sol=${sol}`;
             if (camera) {
                 backendUrl += `&camera=${camera}`;
