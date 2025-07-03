@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import './RoverPage.css'; 
+import './RoverPage.css';
 import { Bar } from 'react-chartjs-2';
 import { Chart, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
 Chart.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
@@ -48,7 +48,7 @@ const RoverPage = () => {
 
         try {
             // I'm calling the backend endpoint to fetch photos.
-            let backendUrl = `http://localhost:5001/api/mars-rover-photos?rover=${rover}&sol=${sol}`;
+            let backendUrl = `/api/mars-rover-photos?rover=${rover}&sol=${sol}`;
             if (camera) {
                 backendUrl += `&camera=${camera}`;
             }
