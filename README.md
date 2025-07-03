@@ -9,8 +9,6 @@ Lunar Watch is a full-stack web application that lets you explore NASA's open AP
 - **Asteroid Tracker:** Track near-Earth objects, browse asteroid data, and view threat assessments.
 - **VIPER Mission Timeline:** Explore and filter key events in NASA's upcoming lunar rover mission.
 - **Interactive 3D Moon:** Simulate the VIPER rover's path on a 3D lunar surface.
-- **Mission Log:** Add and view your own mission log entries.
-- **Did You Know?:** Share and discover fun space facts.
 - **Data Visualizations:** Charts and graphs for Mars Rover stats, asteroid threats, ISS tracking, and more.
 
 ## 🚀 Getting Started
