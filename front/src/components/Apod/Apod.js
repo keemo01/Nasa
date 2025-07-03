@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import Apod from './Apod'; 
-import './Apod.css'; 
+import Apod from './Apod';
+import './Apod.css';
 
-const BACKEND_BASE_URL = 'http://localhost:5001'; 
+// I'm setting the base URL to a relative path for Vercel deployment.
+const BACKEND_BASE_URL = '';
 
 const ApodPage = () => {
     // I'm setting up state for APOD data, loading, and error.
@@ -29,21 +30,21 @@ const ApodPage = () => {
 
         // I'm calculating today's date in NASA's Eastern Time if no date is provided.
         if (!dateToFetch) {
-            const now = new Date();
-            const easternTimeString = now.toLocaleString("en-US", {
-                timeZone: "America/New_York",
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit"
+            // This is a more robust way to get date parts in a specific timezone
+            const dtf = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'America/New_York',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
             });
-            const [monthStr, dayStr, yearStr] = easternTimeString.split('/');
-            const easternDate = new Date(yearStr, parseInt(monthStr, 10) - 1, parseInt(dayStr, 10));
-
-            const formattedYear = easternDate.getFullYear();
-            const formattedMonth = String(easternDate.getMonth() + 1).padStart(2, '0');
-            const formattedDay = String(easternDate.getDate()).padStart(2, '0');
-            finalDateToRequest = `${formattedYear}-${formattedMonth}-${formattedDay}`;
+            const parts = dtf.formatToParts(new Date());
+            const partValue = (type) => parts.find(p => p.type === type)?.value;
+            const year = partValue('year');
+            const month = partValue('month');
+            const day = partValue('day');
+            finalDateToRequest = `${year}-${month}-${day}`;
         }
+
 
         console.log(`Attempting to fetch APOD for date: ${finalDateToRequest}`);
         const apiUrl = `${BACKEND_BASE_URL}/api/apod?date=${finalDateToRequest}`;
@@ -72,22 +73,24 @@ const ApodPage = () => {
 
             if (!dateToFetch && err.message.includes('No data available')) {
                  console.log("Initial fetch failed. Attempting fallback for today's APOD (yesterday's Eastern Time).");
-                 const now = new Date();
-                 const easternTimeString = now.toLocaleString("en-US", {
-                    timeZone: "America/New_York",
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit"
-                 });
-                const [monthStr, dayStr, yearStr] = easternTimeString.split('/');
-                const easternDate = new Date(yearStr, parseInt(monthStr, 10) - 1, parseInt(dayStr, 10));
+                 const dtf = new Intl.DateTimeFormat('en-US', {
+                    timeZone: 'America/New_York',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                });
+                const parts = dtf.formatToParts(new Date());
+                const partValue = (type) => parts.find(p => p.type === type)?.value;
+                const year = partValue('year');
+                const month = partValue('month');
+                const day = partValue('day');
+                
+                const easternDate = new Date(`${year}-${month}-${day}T12:00:00`);
+                easternDate.setDate(easternDate.getDate() - 1);
 
-                const yesterdayEastern = new Date(easternDate);
-                yesterdayEastern.setDate(yesterdayEastern.getDate() - 1);
-
-                const yesterdayYear = yesterdayEastern.getFullYear();
-                const yesterdayMonth = String(yesterdayEastern.getMonth() + 1).padStart(2, '0');
-                const yesterdayDay = String(yesterdayEastern.getDate()).padStart(2, '0');
+                const yesterdayYear = easternDate.getFullYear();
+                const yesterdayMonth = String(easternDate.getMonth() + 1).padStart(2, '0');
+                const yesterdayDay = String(easternDate.getDate()).padStart(2, '0');
                 const formattedYesterday = `${yesterdayYear}-${yesterdayMonth}-${yesterdayDay}`;
 
                 const fallbackApiUrl = `${BACKEND_BASE_URL}/api/apod?date=${formattedYesterday}`;
