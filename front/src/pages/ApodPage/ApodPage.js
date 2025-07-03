@@ -92,9 +92,7 @@ const ApodPage = () => {
         return `${year}-${month}-${day}`;
     });
 
-    // --- CHANGE THIS LINE ---
-    // I'm defining the backend URL using your live Render URL.
-    const BACKEND_BASE_URL = 'https://nasa-dcn0.onrender.com';
+    const BACKEND_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'https://nasa-dcn0.onrender.com';
 
     // I'm creating a helper to format dates.
     const formatDate = (date) => {
