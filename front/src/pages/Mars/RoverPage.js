@@ -1,19 +1,23 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import './RoverPage.css'; // Import its own CSS file
+import './RoverPage.css'; 
+import { Bar } from 'react-chartjs-2';
+import { Chart, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
+Chart.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const RoverPage = () => {
+    // I'm setting up state variables for photos, loading, error, rover, sol, camera, and UI controls.
     const [photos, setPhotos] = useState([]);
-    const [loading, setLoading] = useState(false); // Changed initial state to false
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [rover, setRover] = useState('curiosity'); // Default rover
-    const [sol, setSol] = useState(1000); // Default Martian sol (day)
-    const [camera, setCamera] = useState(''); // Optional camera filter
-    const [debugInfo, setDebugInfo] = useState(''); // For debugging API calls
+    const [rover, setRover] = useState('curiosity');
+    const [sol, setSol] = useState(1000);
+    const [camera, setCamera] = useState('');
+    const [debugInfo, setDebugInfo] = useState('');
     const [displayedPhotos, setDisplayedPhotos] = useState([]);
-    const [photosToShow, setPhotosToShow] = useState(12); // Limit initial display
-    const [hasSearched, setHasSearched] = useState(false); // Track if a search has been initiated
+    const [photosToShow, setPhotosToShow] = useState(12);
+    const [hasSearched, setHasSearched] = useState(false);
 
-    // Available rovers and cameras for selection
+    // I'm defining available rovers and their respective cameras.
     const rovers = ['curiosity', 'opportunity', 'spirit', 'perseverance'];
     const cameras = {
         curiosity: ['FHAZ', 'RHAZ', 'MAST', 'CHEMCAM', 'MAHLI', 'MARDI', 'NAVCAM'],
@@ -22,7 +26,7 @@ const RoverPage = () => {
         perseverance: ['EDL_RUCAM', 'EDL_RDCAM', 'EDL_DDCAM', 'NAVCAM_LEFT', 'NAVCAM_RIGHT', 'MCZ_RIGHT', 'MCZ_LEFT', 'FRONT_HAZCAM_LEFT_A', 'FRONT_HAZCAM_RIGHT_A', 'REAR_HAZCAM_LEFT', 'REAR_HAZCAM_RIGHT']
     };
 
-    // Debounce utility function (moved inside component or can be a separate utility)
+    // I'm defining a debounce utility function.
     const debounce = (func, wait) => {
         let timeout;
         return function executedFunction(...args) {
@@ -35,32 +39,32 @@ const RoverPage = () => {
         };
     };
 
+    // I'm using useCallback to memoize the photo fetching function.
     const fetchMarsRoverPhotos = useCallback(async () => {
         setLoading(true);
         setError(null);
         setDebugInfo('');
-        setPhotosToShow(12); // Reset photos to show on new search
-        
+        setPhotosToShow(12);
+
         try {
-            // Frontend now ONLY calls your backend endpoint
+            // I'm calling the backend endpoint to fetch photos.
             let backendUrl = `http://localhost:5001/api/mars-rover-photos?rover=${rover}&sol=${sol}`;
             if (camera) {
                 backendUrl += `&camera=${camera}`;
             }
-                        
+
             const response = await fetch(backendUrl);
-            
+
             if (!response.ok) {
-                // If backend returns an error, throw it
                 const errorData = await response.json();
                 throw new Error(`Backend error! Status: ${response.status} - ${errorData.error || response.statusText}`);
             }
-            
+
             const data = await response.json();
-            const limitedPhotos = (data.photos || []).slice(0, 50); // Limit to 50 photos to prevent rate limiting on image loads
+            const limitedPhotos = (data.photos || []).slice(0, 50); // I'm limiting to 50 photos.
             setPhotos(limitedPhotos);
-            setDisplayedPhotos(limitedPhotos.slice(0, 12)); // Display initial 12
-            
+            setDisplayedPhotos(limitedPhotos.slice(0, 12)); // I'm displaying initial 12.
+
         } catch (err) {
             console.error("Error fetching Mars Rover photos:", err);
             setError(err);
@@ -68,45 +72,57 @@ const RoverPage = () => {
         } finally {
             setLoading(false);
         }
-    }, [rover, sol, camera]); // Dependencies for useEffect
+    }, [rover, sol, camera]);
 
-    // Debounced search function
+    // I'm creating a debounced version of the search function.
     const debouncedSearch = useCallback(
         debounce(() => {
-            if (hasSearched) { // Only trigger debounced search if a search has already been initiated
+            if (hasSearched) {
                 fetchMarsRoverPhotos();
             }
-        }, 1000), // Wait 1 second after user stops typing/selecting
+        }, 1000),
         [fetchMarsRoverPhotos, hasSearched]
     );
 
-    // Effect to trigger debounced search when parameters change
+    // I'm using useEffect to trigger the debounced search when parameters change.
     useEffect(() => {
         if (hasSearched) {
             debouncedSearch();
         }
     }, [rover, sol, camera, debouncedSearch, hasSearched]);
 
-    // Handle manual search button click
+    // I'm handling the manual search button click.
     const handleSearch = () => {
-        setHasSearched(true); // Mark that a search has been initiated
+        setHasSearched(true);
         fetchMarsRoverPhotos();
     };
 
-    // Handle showing more photos
+    // I'm handling the "Load More Photos" functionality.
     const showMorePhotos = () => {
         const newCount = Math.min(photosToShow + 12, photos.length);
         setPhotosToShow(newCount);
         setDisplayedPhotos(photos.slice(0, newCount));
     };
 
-    // Update displayed photos when photosToShow changes (if photos array already populated)
+    // I'm updating displayed photos when `photosToShow` changes.
     useEffect(() => {
         if (photos.length > 0 && displayedPhotos.length < photosToShow) {
             setDisplayedPhotos(photos.slice(0, photosToShow));
         }
     }, [photos, photosToShow, displayedPhotos.length]);
 
+    // I'm setting up state for camera statistics.
+    const [cameraStats, setCameraStats] = useState({});
+
+    // I'm calculating camera statistics when photos change.
+    useEffect(() => {
+        const stats = {};
+        photos.forEach(photo => {
+            const cam = photo.camera.full_name;
+            stats[cam] = (stats[cam] || 0) + 1;
+        });
+        setCameraStats(stats);
+    }, [photos]);
 
     return (
         <div className="mars-rover-page-container">
@@ -115,10 +131,11 @@ const RoverPage = () => {
             </h2>
 
             <div className="rover-controls-panel">
+                {/* I'm rendering controls for rover, sol, and camera selection. */}
                 <div className="control-group">
                     <label className="control-label">Select Rover:</label>
-                    <select 
-                        value={rover} 
+                    <select
+                        value={rover}
                         onChange={(e) => setRover(e.target.value)}
                         className="control-select"
                     >
@@ -143,8 +160,8 @@ const RoverPage = () => {
 
                 <div className="control-group">
                     <label className="control-label">Select Camera:</label>
-                    <select 
-                        value={camera} 
+                    <select
+                        value={camera}
                         onChange={(e) => setCamera(e.target.value)}
                         className="control-select"
                     >
@@ -156,7 +173,8 @@ const RoverPage = () => {
                 </div>
 
                 <div className="control-group search-button-group">
-                    <button 
+                    {/* I'm rendering the search button. */}
+                    <button
                         onClick={handleSearch}
                         disabled={loading}
                         className="search-button"
@@ -166,7 +184,7 @@ const RoverPage = () => {
                 </div>
             </div>
 
-            {/* Rate Limiting Info */}
+            {/* I'm displaying rate limiting information. */}
             <div className="rate-limiting-info">
                 <strong>🚀 Rate Limiting Features:</strong>
                 <ul>
@@ -177,7 +195,7 @@ const RoverPage = () => {
                 </ul>
             </div>
 
-            {/* Debug Information */}
+            {/* I'm displaying debug information. */}
             {debugInfo && (
                 <div className="debug-info-panel">
                     <strong>Debug Info:</strong><br />
@@ -185,6 +203,7 @@ const RoverPage = () => {
                 </div>
             )}
 
+            {/* I'm conditionally rendering loading, error, or no results messages. */}
             {loading && (
                 <div className="gallery-status-message">
                     <div className="spinner"></div>
@@ -215,6 +234,7 @@ const RoverPage = () => {
                 </div>
             )}
 
+            {/* I'm rendering the photo grid. */}
             <div className="photo-grid">
                 {!loading && !error && displayedPhotos.map(photo => (
                     <div key={photo.id} className="photo-card">
@@ -222,11 +242,11 @@ const RoverPage = () => {
                             <img
                                 src={photo.img_src}
                                 alt={`Mars Rover Photo - Sol ${photo.sol} - Camera: ${photo.camera.full_name}`}
-                                onError={(e) => { 
-                                    e.target.onerror = null; 
-                                    e.target.src = "https://placehold.co/400x300/333333/FFFFFF?text=Image+Error"; 
+                                onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = "https://placehold.co/400x300/333333/FFFFFF?text=Image+Error";
                                 }}
-                                loading="lazy" // Lazy load images to prevent hitting rate limits
+                                loading="lazy"
                                 className="photo-image"
                             />
                         </div>
@@ -248,7 +268,7 @@ const RoverPage = () => {
                 ))}
             </div>
 
-            {/* Load More Button */}
+            {/* I'm rendering the "Load More" button. */}
             {photos.length > displayedPhotos.length && (
                 <div className="load-more-container">
                     <button
@@ -257,6 +277,35 @@ const RoverPage = () => {
                     >
                         Load More Photos ({displayedPhotos.length} of {photos.length})
                     </button>
+                </div>
+            )}
+
+            {/* I'm rendering the data visualization chart. */}
+            {hasSearched && !loading && !error && Object.keys(cameraStats).length > 0 && (
+                <div className="camera-stats-chart-container">
+                    <h3>Photo Count by Camera</h3>
+                    <Bar
+                        data={{
+                            labels: Object.keys(cameraStats),
+                            datasets: [{
+                                label: 'Number of Photos',
+                                data: Object.values(cameraStats),
+                                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1,
+                            }]
+                        }}
+                        options={{
+                            responsive: true,
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: { enabled: true }
+                            },
+                            scales: {
+                                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                            }
+                        }}
+                    />
                 </div>
             )}
         </div>

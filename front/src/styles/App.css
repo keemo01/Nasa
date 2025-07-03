@@ -1,145 +1,179 @@
-/* front/src/styles/App.css */
-
-/* Global Base Styles */
-body {
+/* I reset default margins and apply base font + background */
+html, body {
     margin: 0;
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #0d1117; /* Slightly darker background for more contrast */
-    color: #e6edf3; /* Lighter text for better contrast on dark background */
-}
-
-/* Custom Scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-    background: #21262d; /* Darker track */
-    border-radius: 4px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #9258f3; /* Slightly brighter purple for thumb */
-    border-radius: 4px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: #7b40d3; /* Darker hover state */
-}
-
-/* App Container */
-.app-container {
     min-height: 100vh;
+    background-color: #0f172a;
+    background-image: linear-gradient(to bottom right, #0f172a, #2a0f3d, #0f172a);
+    background-attachment: fixed;
+    color: #e2e8f0;
+}
+
+/* I use flex here to help stretch the layout vertically */
+.app-container {
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
 }
 
-/* App-level Loading and Error States */
-.app-loading, .app-error {
+/* I centered loading and error messages */
+.app-loading,
+.app-error {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background-color: #0d1117; /* Darker background */
-    color: #60a5fa;
-    padding: 2rem;
+    background-color: #1a202c;
+    color: #a78bfa;
+    font-size: 1.5rem;
     text-align: center;
 }
 
+/* I made a custom spinner here */
 .app-loading .spinner {
-    animation: spin 1s linear infinite;
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-top: 4px solid #a78bfa;
-    border-bottom: 4px solid #a78bfa;
+    border: 8px solid rgba(255, 255, 255, 0.3);
+    border-top: 8px solid #a78bfa;
     border-radius: 50%;
-    width: 80px;
-    height: 80px;
-    margin-right: 1.5rem;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
 }
 
+/* I added rotation animation */
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
 
-.app-loading p {
-    margin-left: 1.5rem;
-    font-size: 1.8rem; /* Slightly larger */
-    font-weight: 300;
-    color: #8b5cf6; /* Purple loading text */
-}
-
+/* I styled error text differently */
 .app-error {
     color: #ef4444;
-    flex-direction: column;
 }
 
 .app-error h1 {
-    font-size: 2.5rem; /* Slightly larger */
-    font-weight: bold;
-    margin-bottom: 1.2rem;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #ef4444;
 }
 
 .app-error p {
-    font-size: 1.3rem; /* Slightly larger */
-    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #cbd5e1;
 }
 
 .app-error .error-code {
-    font-size: 1.15rem; /* Slightly larger */
-    font-family: monospace;
-    background-color: #1a1f26; /* Darker background */
-    padding: 1.2rem;
-    border-radius: 0.5rem;
-    color: #e6edf3; /* Lighter text */
-    border: 1px solid #30363d; /* Subtle border */
+    font-size: 1rem;
+    color: #94a3b8;
 }
 
 .app-error .error-footer {
-    margin-top: 1.8rem; /* More space */
-    color: #909ba8; /* Slightly darker gray */
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    color: #6b7280;
 }
 
-/* Main Page Content Wrapper (for routed pages) */
+/* I used this wrapper to center and pad main content */
 .main-page-content-wrapper {
-    flex-grow: 1; /* Allows the content area to expand */
-    display: flex; /* Ensures pages can lay out as flex children */
-    flex-direction: column; /* Default stack, pages will control their internal layout */
-    padding: 1.5rem; /* Consistent padding around the main content area */
-}
-
-/* Timeline Section (Global) */
-.timeline-section {
-    background-color: #1e293b; /* slate-900 */
-    padding: 2rem;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-    border-radius: 1rem;
-    margin: 1.5rem 1.5rem 1.5rem;
-    border: 1px solid #334155; /* slate-700 */
-}
-
-.timeline-section h3 {
-    font-size: 1.875rem;
-    font-weight: bold;
-    color: #a78bfa; /* purple-300 */
-    margin-bottom: 1.25rem;
-}
-
-.timeline-placeholder {
+    flex-grow: 1;
+    padding: 2rem 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
     width: 100%;
-    height: 4rem;
-    background-color: #1f2937; /* slate-800 */
-    border-radius: 9999px; /* rounded-full */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #9ca3af; /* gray-400 */
-    border: 1px solid #334155; /* slate-700 */
+    box-sizing: border-box;
 }
 
-.timeline-placeholder p {
-    font-size: 1.125rem;
-    font-weight: 300;
+/* I kept headings consistent with this color + spacing */
+h1, h2, h3, h4, h5, h6 {
+    color: #a78bfa;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+/* I gave h1 a slightly different color */
+h1 {
+    font-size: 3rem;
+    text-align: center;
+    letter-spacing: -0.03em;
+    color: #93c5fd;
+}
+
+h2 {
+    font-size: 2.5rem;
+    letter-spacing: -0.025em;
+}
+
+h3 {
+    font-size: 2.25rem;
+    letter-spacing: -0.025em;
+}
+
+/* Just standard paragraph color and spacing */
+p {
+    color: #cbd5e1;
+    line-height: 1.6;
+}
+
+/* I styled links with blue + hover feedback */
+a, .nav-link {
+    color: #60a5fa;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover, .nav-link:hover {
+    color: #93c5fd;
+    text-decoration: underline;
+}
+
+/* I reused this panel style across the app */
+.app-card-panel {
+    background-color: #1e293b;
+    border-radius: 1rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    border: 1px solid #334155;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* I adjusted padding and font sizes for mobile */
+@media (max-width: 768px) {
+    .main-page-content-wrapper {
+        padding: 1.5rem 1rem;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
+    h3 {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-page-content-wrapper {
+        padding: 1rem 0.75rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+    }
 }

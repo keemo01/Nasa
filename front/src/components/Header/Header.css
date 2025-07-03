@@ -1,63 +1,62 @@
-/* front/src/components/Header/Header.css */
 .app-header {
-    background-color: #1e293b; /* slate-900 */
-    padding: 1.5rem 1rem; /* Adjusted padding for top/bottom and sides */
+    background-color: #1e293b;
+    padding: 1.5rem 1rem;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     border-bottom-left-radius: 1.5rem;
     border-bottom-right-radius: 1.5rem;
-    margin: 1rem 1rem 0; /* mx-4 mt-4 */
+    margin: 1rem 1rem 0;
     display: flex;
-    flex-direction: column; /* Stack logo/user-id row and nav below it */
-    align-items: center; /* Center content horizontally */
-    gap: 1rem; /* Space between the top row and the nav */
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
 }
 
-@media (min-width: 640px) { /* sm breakpoint */
+@media (min-width: 640px) {
     .app-header {
-        padding: 1rem 1.5rem; /* More horizontal padding on larger screens */
+        padding: 1rem 1.5rem;
     }
 }
 
-.header-top-row { /* New wrapper for logo and user ID */
-    width: 100%; /* Take full width within header */
+.header-top-row {
+    width: 100%;
     display: flex;
-    flex-direction: column; /* Stack logo and user ID by default */
-    align-items: center; /* Center them */
+    flex-direction: column;
+    align-items: center;
     justify-content: space-between;
-    gap: 0.8rem; /* Space between logo group and user ID on small screens */
+    gap: 0.8rem;
 }
 
-@media (min-width: 640px) { /* sm breakpoint */
+@media (min-width: 640px) {
     .header-top-row {
-        flex-direction: row; /* Row layout on larger screens */
-        gap: 1.5rem; /* Standard gap */
+        flex-direction: row;
+        gap: 1.5rem;
     }
 }
 
 .logo-group {
     display: flex;
     align-items: center;
-    margin-bottom: 0; /* No bottom margin, flex gap handles spacing */
+    margin-bottom: 0;
 }
 
 .logo {
     height: 3rem;
     width: 3rem;
-    margin-right: 0.8rem; /* Slightly less margin to bring closer to text */
-    color: #a78bfa; /* purple-400 - for SVG fill */
+    margin-right: 0.8rem;
+    color: #a78bfa;
 }
 
 .logo-group h1 {
-    font-size: 2.8rem; /* Slightly smaller for better fit, was 3rem */
+    font-size: 2.8rem;
     font-weight: 800;
-    color: #a78bfa; /* purple-400 as primary color */
+    color: #a78bfa;
 }
 
 .user-id {
-    font-size: 0.8rem; /* Slightly smaller for less prominence */
+    font-size: 0.8rem;
     color: #9ca3af;
     background-color: #1f2937;
-    padding: 0.4rem 0.9rem; /* Slightly less padding */
+    padding: 0.4rem 0.9rem;
     border-radius: 9999px;
     border: 1px solid #8b5cf6;
 }
@@ -69,31 +68,31 @@
 }
 
 /* Navigation Links within Header */
-.main-nav-in-header { /* This is the new nav class in Header.js */
+.main-nav-in-header {
     display: flex;
-    flex-wrap: wrap; /* Allow links to wrap on small screens */
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 1rem; /* Space between nav links */
-    width: 100%; /* Take full width of header */
-    padding-top: 0.5rem; /* Add some padding above links */
-    border-top: 1px solid rgba(51, 65, 85, 0.3); /* Subtle separator from top row */
-    margin-top: 1rem; /* More explicit space from top row */
+    gap: 1rem;
+    width: 100%;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(51, 65, 85, 0.3);
+    margin-top: 1rem;
 }
 
-@media (min-width: 768px) { /* md breakpoint for horizontal nav */
+@media (min-width: 768px) {
     .main-nav-in-header {
-        justify-content: flex-end; /* Align links to the right on larger screens */
-        padding-top: 0; /* Remove top padding if next to logo */
-        border-top: none; /* No border if next to logo */
+        justify-content: flex-end;
+        padding-top: 0;
+        border-top: none;
         margin-top: 0;
-        flex-grow: 1; /* Allow it to take available space */
-        gap: 1.5rem; /* More gap */
+        flex-grow: 1;
+        gap: 1.5rem;
     }
-    .app-header { /* Adjust header for horizontal layout on larger screens */
-        flex-direction: row; /* Layout logo/nav/user-id in a row */
-        justify-content: space-between; /* Distribute items */
+    .app-header {
+        flex-direction: row;
+        justify-content: space-between;
         align-items: center;
-        gap: 1.5rem; /* Space between main elements */
+        gap: 1.5rem;
     }
 }
 
@@ -104,8 +103,8 @@
     padding: 0.6rem 1.1rem;
     border-radius: 0.4rem;
     transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
-    font-size: 0.95rem; /* Slightly smaller for nav links */
-    white-space: nowrap; /* Prevent links from breaking */
+    font-size: 0.95rem;
+    white-space: nowrap;
 }
 
 .nav-link:hover {

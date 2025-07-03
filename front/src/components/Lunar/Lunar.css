@@ -1,13 +1,10 @@
-/* front/src/components/Lunar/Lunar.css */
-
 .lunar-surface-3d-wrapper {
     width: 100%;
-    height: 100%;
-    position: relative; /* Crucial: The sticky element needs a positioned ancestor */
+    height: 100%; /* This assumes its parent has a defined height */
+    position: relative;
     display: flex;
     flex-direction: column;
-    overflow-y: auto; /* Enable vertical scrolling if content overflows */
-    overflow-x: hidden; /* Hide horizontal scrollbar */
+    overflow: hidden;
 }
 
 .lunar-surface-title {
@@ -27,12 +24,9 @@
 .lunar-canvas-container {
     flex-grow: 1;
     width: 100%;
-    /* Padding to create a safe zone around the 3D content */
-    padding: 3rem 2rem; /* Keep this padding */
+    padding: 3rem 2rem;
     box-sizing: border-box;
-    /* IMPORTANT: If the canvas itself has content that scrolls,
-       you might need to adjust this, but for 3D, the canvas itself
-       doesn't scroll, its parent does. */
+    overflow: hidden; 
 }
 
 .lunar-canvas-container canvas {
@@ -42,24 +36,37 @@
 }
 
 .viper-overlay {
-    /* CHANGED: From position: absolute to position: sticky */
     position: sticky;
-    bottom: 0; /* Stick to the bottom of its scrollable parent */
-    left: 0; /* Align to the left */
-    right: 0; /* Align to the right */
-    /* Adjust padding to create space from the actual bottom edge of the wrapper */
-    padding: 1.5rem 2.5rem; /* Increased padding slightly for better visual separation */
-    
-    background-color: rgba(30, 41, 59, 0.95); /* Solid background for text visibility */
-    border-top: 1px solid #475569; /* Add a top border to separate it visually from content */
-    border-radius: 0 0 1rem 1rem; /* Only bottom corners rounded if it spans full width */
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem 2.5rem;
+    background-color: rgba(30, 41, 59, 0.95);
+    border-top: 1px solid #475569;
+    border-radius: 0 0 1rem 1rem;
     font-size: 1.1rem;
-    box-shadow: 0 -6px 12px rgba(0, 0, 0, 0.3); /* Shadow on top to indicate it's floating */
-    z-index: 10; /* Ensure it stays above other content */
+    box-shadow: 0 -6px 12px rgba(0, 0, 0, 0.3);
+    z-index: 10;
     color: #c9b1f7;
-    /* Ensure it takes full width of its parent */
     width: 100%;
-    box-sizing: border-box; /* Include padding in width */
+    box-sizing: border-box;
+
+    max-height: 200px; 
+    overflow-y: scroll; 
+    &::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 10px;
+        background-color: transparent; /* Make scrollbar track transparent */
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: rgba(100, 116, 139, 0.5);
+        border-radius: 10px;
+        border: 2px solid transparent; 
+        background-clip: padding-box; 
+    }
+    &::-webkit-scrollbar-track {
+        background-color: transparent; 
+    }
 }
 
 .viper-overlay p {

@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import './Lunar.css';
 
 const Lunar = () => {
+    // I'm using refs to persist Three.js objects across renders.
     const mountRef = useRef(null);
     const sceneRef = useRef(null);
     const cameraRef = useRef(null);
@@ -22,15 +23,14 @@ const Lunar = () => {
         const scene = new THREE.Scene();
         sceneRef.current = scene;
 
-        // CAMERA SETTINGS
         const camera = new THREE.PerspectiveCamera(
-            75, // FOV
+            75,
             currentMount.clientWidth / currentMount.clientHeight,
             0.1,
             1000
         );
-        // --- ADJUSTED: Initial camera position for more zoom out ---
-        camera.position.set(0, 0, 6); // Moved camera slightly further back (from 3 to 4)
+        // I'm setting the initial camera position for a zoomed-out view.
+        camera.position.set(0, 0, 6);
         cameraRef.current = camera;
 
         const renderer = new THREE.WebGLRenderer({
@@ -43,17 +43,16 @@ const Lunar = () => {
         currentMount.appendChild(renderer.domElement);
         rendererRef.current = renderer;
 
-        // STANDARD ORBITCONTROLS
+        // I'm setting up OrbitControls for camera interaction.
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
         controls.minDistance = 2.5;
-        // --- ADJUSTED: Allow more zoom out ---
-        controls.maxDistance = 8; // Increased max zoom out distance (from 6 to 8)
+        controls.maxDistance = 8; // I'm allowing more zoom out.
         controls.maxPolarAngle = Math.PI / 2;
         controlsRef.current = controls;
 
-        // LIGHTING (unchanged)
+        // I'm adding various lights to the scene.
         const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
         scene.add(ambientLight);
 
@@ -66,7 +65,7 @@ const Lunar = () => {
         rimLight.position.set(-5, 2, -5);
         scene.add(rimLight);
 
-        // MOON GEOMETRY AND TEXTURE (unchanged)
+        // I'm creating the moon geometry and a dynamic canvas texture for craters.
         const geometry = new THREE.SphereGeometry(1.8, 64, 64);
 
         const moonCanvas = document.createElement('canvas');
@@ -81,6 +80,7 @@ const Lunar = () => {
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, moonCanvas.width, moonCanvas.height);
 
+        // I'm drawing craters on the moon texture.
         for (let i = 0; i < 80; i++) {
             const x = Math.random() * moonCanvas.width;
             const y = Math.random() * moonCanvas.height;
@@ -98,6 +98,7 @@ const Lunar = () => {
             ctx.fill();
         }
 
+        // I'm drawing small bright spots (rocks/highlights) on the moon.
         for (let i = 0; i < 200; i++) {
             const x = Math.random() * moonCanvas.width;
             const y = Math.random() * moonCanvas.height;
@@ -123,7 +124,7 @@ const Lunar = () => {
         const moon = new THREE.Mesh(geometry, material);
         scene.add(moon);
 
-        //South Pole Ring (unchanged)
+        // I'm adding a red ring to represent the South Pole.
         const southPoleRingGeometry = new THREE.TorusGeometry(1.7, 0.03, 16, 100);
         const southPoleRingMaterial = new THREE.MeshBasicMaterial({
             color: 0xff4444,
@@ -135,19 +136,21 @@ const Lunar = () => {
         southPoleRing.position.y = -1.8 * Math.sin(Math.PI / 180 * 85);
         scene.add(southPoleRing);
 
+        // I'm defining the animation loop.
         const animate = () => {
             animationFrameId.current = requestAnimationFrame(animate);
-            
+
             controls.update();
-            
-            moon.rotation.y += 0.002;
-            
+
+            moon.rotation.y += 0.002; // I'm rotating the moon.
+
+            // I'm making the South Pole ring pulse.
             southPoleRing.material.opacity = 0.6 + 0.2 * Math.sin(Date.now() * 0.003);
-            
+
             renderer.render(scene, camera);
         };
 
-        // RESPONSIVE RESIZE HANDLER 
+        // I'm handling responsive resizing of the renderer.
         const resizeRendererToDisplaySize = () => {
             if (resizeAnimationFrameId.current) {
                 cancelAnimationFrame(resizeAnimationFrameId.current);
@@ -175,37 +178,39 @@ const Lunar = () => {
             });
         };
 
+        // I'm using ResizeObserver to detect container size changes.
         const resizeObserver = new ResizeObserver(() => {
             resizeRendererToDisplaySize();
         });
 
         resizeObserver.observe(currentMount);
         resizeRendererToDisplaySize();
-        animate();
+        animate(); // I'm starting the animation.
 
-        // CLEANUP (unchanged)
+        // I'm defining the cleanup function for when the component unmounts.
         return () => {
             resizeObserver.disconnect();
-            
+
             if (animationFrameId.current) {
                 cancelAnimationFrame(animationFrameId.current);
             }
             if (resizeAnimationFrameId.current) {
                 cancelAnimationFrame(resizeAnimationFrameId.current);
             }
-            
+
             if (controls) {
                 controls.dispose();
             }
-            
+
             if (currentMount && renderer && currentMount.contains(renderer.domElement)) {
                 currentMount.removeChild(renderer.domElement);
             }
-            
+
             if (renderer) {
                 renderer.dispose();
             }
-            
+
+            // I'm disposing of all Three.js objects to prevent memory leaks.
             if (scene) {
                 scene.traverse((object) => {
                     if (object.isMesh) {
@@ -226,7 +231,7 @@ const Lunar = () => {
                 scene.clear();
             }
         };
-    }, []);
+    }, []); 
 
     return (
         <div className="lunar-surface-3d-wrapper custom-scrollbar">

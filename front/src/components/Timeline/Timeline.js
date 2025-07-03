@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react';
 import './Timeline.css';
 
 const Timeline = () => {
-    // VIPER Mission Timeline data - directly on the frontend.
     // This data is curated based on publicly available NASA information.
     const allTimelineEvents = useMemo(() => [
         {

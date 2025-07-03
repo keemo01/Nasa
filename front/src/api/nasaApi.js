@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5001/api'; // Your backend URL
+const API_BASE_URL = 'http://localhost:5001/api'; 
 
 export const fetchApod = async () => {
     try {
