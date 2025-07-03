@@ -1,36 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './ApodPage.css';
 
-// Base URL for the backend API
-const BACKEND_BASE_URL = '';
-
-// A helper function to get the current date formatted for NASA's Eastern Time zone.
-const getEasternTimeDate = (date = new Date()) => {
-    const easternTimeString = date.toLocaleString("en-US", {
-        timeZone: "America/New_York",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit"
-    });
-    const [monthStr, dayStr, yearStr] = easternTimeString.split('/');
-    const easternDate = new Date(yearStr, parseInt(monthStr, 10) - 1, parseInt(dayStr, 10));
-    return easternDate;
-};
-
-// A helper to format Date objects into YYYY-MM-DD strings
-const formatDate = (date) => {
-    if (!(date instanceof Date) || isNaN(date)) {
-        console.error("Invalid date provided to formatDate");
-        return '';
-    }
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-};
-
-// Display component for the APOD data
+// Apod component for displaying the APOD data
 const Apod = ({ apodData, loading, error }) => {
+    // I'm conditionally rendering loading, error, or no data messages.
     if (loading) {
         return (
             <div className="apod-display-loading flex justify-center items-center min-h-[200px] text-xl text-purple-400 text-center p-4 rounded-xl bg-slate-800 mt-8 shadow-lg">
@@ -44,7 +17,7 @@ const Apod = ({ apodData, loading, error }) => {
             <div className="apod-display-error flex flex-col justify-center items-center min-h-[200px] text-xl text-red-500 text-center p-4 rounded-xl bg-slate-800 mt-8 shadow-lg">
                 <p>Error loading APOD: {error.message}</p>
                 {error.status && <p>Status: {error.status}</p>}
-                <p className="text-sm text-slate-400 mt-2">Please check your connection and try another date.</p>
+                <p className="text-sm text-slate-400 mt-2">Please ensure your backend is running and accessible at `http://localhost:5001`.</p>
                 <p className="text-sm text-slate-400">Also, check the console for more details.</p>
             </div>
         );
@@ -53,11 +26,12 @@ const Apod = ({ apodData, loading, error }) => {
     if (!apodData) {
         return (
             <div className="apod-display-no-data flex justify-center items-center min-h-[200px] text-xl text-slate-400 text-center p-4 rounded-xl bg-slate-800 mt-8 shadow-lg">
-                <p>No APOD data available. Please select a date.</p>
+                <p>No APOD data available. Please select a date or check your connection.</p>
             </div>
         );
     }
 
+    // I'm rendering the APOD content when data is available.
     return (
         <div className="apod-content-card bg-slate-800 rounded-xl p-8 shadow-2xl text-center max-w-4xl w-full mt-8 border border-slate-700">
             <h1 className="apod-content-title text-sky-400 text-4xl font-bold mb-4 leading-tight lg:text-3xl md:text-2xl">
@@ -67,6 +41,7 @@ const Apod = ({ apodData, loading, error }) => {
                 {apodData.date}
             </p>
 
+            {/* I'm conditionally rendering an image or an iframe based on media_type. */}
             {apodData.media_type === 'image' ? (
                 <img
                     src={apodData.url}
@@ -85,6 +60,7 @@ const Apod = ({ apodData, loading, error }) => {
                     className="apod-content-media apod-content-video w-full aspect-video max-w-full rounded-lg mb-8 mx-auto bg-slate-900"
                     frameBorder="0"
                     allowFullScreen
+                    onError={() => console.error("Error loading video iframe")}
                 />
             )}
 
@@ -102,57 +78,115 @@ const Apod = ({ apodData, loading, error }) => {
 };
 
 const ApodPage = () => {
+    // I'm setting up state variables for APOD data, loading, and error.
     const [apodData, setApodData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [selectedDate, setSelectedDate] = useState(() => formatDate(getEasternTimeDate()));
 
-    const fetchApiData = useCallback(async (url) => {
-        const response = await fetch(url);
-        if (!response.ok) {
-            const contentType = response.headers.get('content-type');
-            let errorMsg = `HTTP error! Status: ${response.status}`;
-            if (contentType && contentType.includes('application/json')) {
-                const errorBody = await response.json();
-                errorMsg += `. Message: ${errorBody.msg || JSON.stringify(errorBody)}`;
-            } else {
-                const errorText = await response.text();
-                errorMsg += `. Response: ${errorText.substring(0, 100)}...`;
-            }
-            throw new Error(errorMsg);
-        }
-        return await response.json();
-    }, []);
+    // I'm initializing the selected date to today's date.
+    const [selectedDate, setSelectedDate] = useState(() => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    });
 
+    // I'm defining the backend URL.
+    const BACKEND_BASE_URL = 'http://localhost:5001';
+
+    // I'm creating a helper to format dates.
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    // I'm memoizing the fetchApod function.
     const fetchApod = useCallback(async (dateToFetch) => {
         setLoading(true);
         setError(null);
         setApodData(null);
 
-        const finalDateToRequest = dateToFetch || formatDate(getEasternTimeDate());
+        let finalDateToRequest = dateToFetch;
+
+        // I'm handling initial date calculation for "today" in Eastern Time so it matches NASA's APOD data availability
+        if (!dateToFetch) {
+            const now = new Date();
+            const easternTimeString = now.toLocaleString("en-US", {
+                timeZone: "America/New_York",
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit"
+            });
+            const [monthStr, dayStr, yearStr] = easternTimeString.split('/');
+            const easternDate = new Date(yearStr, parseInt(monthStr, 10) - 1, parseInt(dayStr, 10));
+
+            finalDateToRequest = formatDate(easternDate);
+        }
+
         console.log(`Attempting to fetch APOD for date: ${finalDateToRequest}`);
         const apiUrl = `${BACKEND_BASE_URL}/api/apod?date=${finalDateToRequest}`;
 
         try {
-            const data = await fetchApiData(apiUrl);
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    const errorBody = await response.json();
+                    throw new Error(`HTTP error! Status: ${response.status}. Message: ${errorBody.msg || JSON.stringify(errorBody)}`);
+                } else {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! Status: ${response.status}. Response: ${errorText.substring(0, 100)}...`);
+                }
+            }
+            const data = await response.json();
             setApodData(data);
             console.log("APOD fetched successfully for date:", finalDateToRequest);
         } catch (err) {
             console.error(`Error fetching APOD for ${finalDateToRequest}:`, err);
-            
-            // If the initial load for "today" fails, try fetching for yesterday as a fallback.
-            if (!dateToFetch) {
-                console.log("Initial fetch failed. Attempting fallback to yesterday.");
-                const yesterday = getEasternTimeDate();
-                yesterday.setDate(yesterday.getDate() - 1);
-                const formattedYesterday = formatDate(yesterday);
+            setError({
+                message: `Failed to load APOD for ${finalDateToRequest}. ${err.message || 'Please try another date.'}`,
+                status: err.status || 'Request Failed'
+            });
+
+            // I'm handling fallback for initial load if today's APOD fails.
+            if (!dateToFetch && err.message.includes('No data available')) {
+                 console.log("Initial fetch failed. Attempting fallback for today's APOD (yesterday's Eastern Time).");
+                 const now = new Date();
+                 const easternTimeString = now.toLocaleString("en-US", {
+                    timeZone: "America/New_York",
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit"
+                 });
+                const [monthStr, dayStr, yearStr] = easternTimeString.split('/');
+                const easternDate = new Date(yearStr, parseInt(monthStr, 10) - 1, parseInt(dayStr, 10));
+
+                const yesterdayEastern = new Date(easternDate);
+                yesterdayEastern.setDate(yesterdayEastern.getDate() - 1);
+
+                const formattedYesterday = formatDate(yesterdayEastern);
+
                 const fallbackApiUrl = `${BACKEND_BASE_URL}/api/apod?date=${formattedYesterday}`;
 
                 try {
-                    const fallbackData = await fetchApiData(fallbackApiUrl);
+                    const fallbackResponse = await fetch(fallbackApiUrl);
+                    if (!fallbackResponse.ok) {
+                        const contentType = fallbackResponse.headers.get('content-type');
+                        if (contentType && contentType.includes('application/json')) {
+                            const errorBody = await fallbackResponse.json();
+                            throw new Error(`Fallback HTTP error! Status: ${fallbackResponse.status}. Message: ${errorBody.msg || JSON.stringify(errorBody)}`);
+                        } else {
+                            const errorText = await fallbackResponse.text();
+                            throw new Error(`Fallback HTTP error! Status: ${fallbackResponse.status}. Response: ${errorText.substring(0, 100)}...`);
+                        }
+                    }
+                    const fallbackData = await fallbackResponse.json();
                     setApodData(fallbackData);
-                    setSelectedDate(formattedYesterday); // Update date picker to reflect fallback
                     console.log("APOD fetched successfully for fallback date:", formattedYesterday);
+                    setError(null);
                 } catch (fallbackErr) {
                     console.error("Final fallback APOD fetch failed:", fallbackErr);
                     setError({
@@ -160,62 +194,65 @@ const ApodPage = () => {
                         status: fallbackErr.status || 'Request Failed'
                     });
                 }
-            } else {
-                // For user-selected dates that fail, just show the error.
-                setError({
-                    message: `Failed to load APOD for ${finalDateToRequest}. ${err.message || 'Please try another date.'}`,
-                    status: err.status || 'Request Failed'
-                });
             }
         } finally {
             setLoading(false);
         }
-    }, [fetchApiData]);
+    }, [BACKEND_BASE_URL]);
 
+    // I'm fetching APOD data on component mount
     useEffect(() => {
-        fetchApod(null); // Fetch for today on initial load
+        fetchApod(null);
     }, [fetchApod]);
 
+    // I'm handling date input changes
     const handleDateChange = (event) => {
         const newDate = event.target.value;
         setSelectedDate(newDate);
         fetchApod(newDate);
     };
 
+    // I'm handling navigation to previous/next day
     const handleNavigation = (direction) => {
-        const currentDate = new Date(selectedDate + 'T12:00:00'); // Use T12:00:00 to avoid timezone issues
+        const currentDate = new Date(selectedDate + 'T12:00:00');
+        let newDate = new Date(currentDate);
+
         if (direction === 'prev') {
-            currentDate.setDate(currentDate.getDate() - 1);
+            newDate.setDate(currentDate.getDate() - 1);
         } else if (direction === 'next') {
-            currentDate.setDate(currentDate.getDate() + 1);
+            newDate.setDate(currentDate.getDate() + 1);
         }
-        const formattedNewDate = formatDate(currentDate);
+
+        const formattedNewDate = formatDate(newDate);
         setSelectedDate(formattedNewDate);
         fetchApod(formattedNewDate);
     };
 
+    // I'm handling quick action buttons
     const handleQuickAction = (action) => {
         let dateToSet;
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+
         if (action === 'today') {
-            dateToSet = getEasternTimeDate();
+            dateToSet = today;
         } else if (action === 'yesterday') {
-            dateToSet = getEasternTimeDate();
-            dateToSet.setDate(dateToSet.getDate() - 1);
+            dateToSet = yesterday;
         } else if (action === 'random') {
             const startDate = new Date('1995-06-16');
-            const endDate = getEasternTimeDate();
+            const endDate = new Date();
             const randomTime = startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime());
             dateToSet = new Date(randomTime);
         }
-        
-        if (dateToSet) {
-            const formattedDate = formatDate(dateToSet);
-            setSelectedDate(formattedDate);
-            fetchApod(formattedDate);
-        }
+
+        const formattedDate = formatDate(dateToSet);
+        setSelectedDate(formattedDate);
+        fetchApod(formattedDate);
     };
 
-    const maxDate = formatDate(getEasternTimeDate());
+    // I'm setting the maximum date for the date picker to today
+    const maxDate = new Date().toISOString().split('T')[0];
 
     return (
         <div className="apod-page-container min-h-screen p-8 max-w-4xl mx-auto bg-slate-900 text-slate-100 font-inter box-border">
@@ -225,6 +262,7 @@ const ApodPage = () => {
 
             <div className="date-picker-container flex flex-col items-center mb-10 gap-6 p-6 bg-slate-800 rounded-2xl shadow-xl border border-slate-700">
                 <div className="date-controls flex items-center gap-4 flex-wrap justify-center">
+                    {/* I'm rendering navigation buttons. */}
                     <button
                         onClick={() => handleNavigation('prev')}
                         className="nav-button w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 text-white text-xl font-bold transition-all duration-200 shadow-md hover:from-purple-600 hover:to-purple-800 hover:translate-y-[-2px] hover:shadow-lg active:translate-y-0 disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-slate-500"
@@ -234,6 +272,7 @@ const ApodPage = () => {
                     </button>
 
                     <div className="date-input-wrapper flex flex-col items-center gap-2">
+                        {/* I'm rendering the date input. */}
                         <label htmlFor="apod-date-picker" className="date-picker-label text-slate-300 text-base font-medium text-center">
                             Select Date:
                         </label>
@@ -258,6 +297,7 @@ const ApodPage = () => {
                 </div>
 
                 <div className="quick-actions flex gap-4 flex-wrap justify-center">
+                    {/* I'm rendering quick action buttons. */}
                     <button
                         onClick={() => handleQuickAction('today')}
                         className="action-button px-5 py-2 rounded-lg bg-gradient-to-br from-cyan-500 to-cyan-700 text-white text-base font-semibold transition-all duration-200 shadow-md hover:from-cyan-700 hover:to-cyan-900 hover:translate-y-[-1px] hover:shadow-lg active:translate-y-0 min-w-[90px] md:px-4 md:py-1.5 md:text-sm"
@@ -279,6 +319,7 @@ const ApodPage = () => {
                 </div>
             </div>
 
+            {/* I'm rendering the Apod display component. */}
             <Apod apodData={apodData} loading={loading} error={error} />
         </div>
     );

@@ -15,12 +15,19 @@
   ],
   "rewrites": [
     {
+      "source": "/api/apod",
+      "destination": "/api/apod.js"
+    },
+    {
       "source": "/api/(.*)",
-      "destination": "/api"
+      "destination": "/api/$1.js"
     },
     {
       "source": "/(.*)",
-      "destination": "/front/index.html"
+      "destination": "/front/$1"
     }
-  ]
+  ],
+  "env": {
+    "NASA_KEY": "@nasa-key"
+  }
 }
