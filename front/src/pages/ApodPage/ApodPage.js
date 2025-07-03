@@ -17,7 +17,7 @@ const Apod = ({ apodData, loading, error }) => {
             <div className="apod-display-error flex flex-col justify-center items-center min-h-[200px] text-xl text-red-500 text-center p-4 rounded-xl bg-slate-800 mt-8 shadow-lg">
                 <p>Error loading APOD: {error.message}</p>
                 {error.status && <p>Status: {error.status}</p>}
-                <p className="text-sm text-slate-400 mt-2">Please ensure your backend is running and accessible at `http://localhost:5001`.</p>
+                <p className="text-sm text-slate-400 mt-2">Please ensure your backend is running and accessible.</p>
                 <p className="text-sm text-slate-400">Also, check the console for more details.</p>
             </div>
         );
@@ -92,8 +92,9 @@ const ApodPage = () => {
         return `${year}-${month}-${day}`;
     });
 
-    // I'm defining the backend URL.
-    const BACKEND_BASE_URL = 'http://localhost:5001';
+    // --- CHANGE THIS LINE ---
+    // I'm defining the backend URL using your live Render URL.
+    const BACKEND_BASE_URL = 'https://nasa-dcn0.onrender.com';
 
     // I'm creating a helper to format dates.
     const formatDate = (date) => {
