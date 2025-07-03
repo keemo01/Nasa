@@ -17,6 +17,8 @@ const RoverPage = () => {
     const [photosToShow, setPhotosToShow] = useState(12);
     const [hasSearched, setHasSearched] = useState(false);
 
+    const BACKEND_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'https://nasa-dcn0.onrender.com';
+
     // I'm defining available rovers and their respective cameras.
     const rovers = ['curiosity', 'opportunity', 'spirit', 'perseverance'];
     const cameras = {
@@ -47,8 +49,8 @@ const RoverPage = () => {
         setPhotosToShow(12);
 
         try {
-            // I'm calling the backend endpoint to fetch photos.
-            let backendUrl = `/api/mars-rover-photos?rover=${rover}&sol=${sol}`;
+            // I'm calling the backend endpoint to fetch photos using the full URL.
+            let backendUrl = `${BACKEND_BASE_URL}/api/mars-rover-photos?rover=${rover}&sol=${sol}`;
             if (camera) {
                 backendUrl += `&camera=${camera}`;
             }
@@ -72,7 +74,7 @@ const RoverPage = () => {
         } finally {
             setLoading(false);
         }
-    }, [rover, sol, camera]);
+    }, [rover, sol, camera, BACKEND_BASE_URL]);
 
     // I'm creating a debounced version of the search function.
     const debouncedSearch = useCallback(

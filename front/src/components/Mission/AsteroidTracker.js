@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import './Mission.css'; 
+import './Mission.css';
 
 const AsteroidTracker = () => {
     // I'm setting up state variables for asteroid data, loading, error, search parameters, and UI elements.
@@ -14,6 +14,10 @@ const AsteroidTracker = () => {
     const [missionLog, setMissionLog] = useState([]);
     const [displayedAsteroids, setDisplayedAsteroids] = useState([]);
     const [asteroidsToShow, setAsteroidsToShow] = useState(10);
+
+    // --- CHANGE THIS SECTION ---
+    // This makes the backend URL dynamic for development vs. production.
+    const BACKEND_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'https://nasa-dcn0.onrender.com';
 
     // I'm adding a new entry to the mission log.
     const addMissionLogEntry = useCallback((entryText) => {
@@ -73,7 +77,7 @@ const AsteroidTracker = () => {
     };
 
     // I'm defining the asynchronous function to search for asteroids.
-    const searchAsteroids = async () => {
+    const searchAsteroids = useCallback(async () => {
         setLoading(true);
         setError(null);
         setDebugInfo('');
@@ -87,18 +91,18 @@ const AsteroidTracker = () => {
 
             switch (searchType) {
                 case 'feed':
-                    backendUrl = `http://localhost:5001/api/asteroids/feed?start_date=${startDate}&end_date=${endDate}`;
+                    backendUrl = `${BACKEND_BASE_URL}/api/asteroids/feed?start_date=${startDate}&end_date=${endDate}`;
                     searchDescription = `Searching for asteroids approaching Earth between ${startDate} and ${endDate}`;
                     break;
                 case 'lookup':
                     if (!asteroidId) {
                         throw new Error('Asteroid ID is required for lookup');
                     }
-                    backendUrl = `http://localhost:5001/api/asteroids/lookup/${asteroidId}`;
+                    backendUrl = `${BACKEND_BASE_URL}/api/asteroids/lookup/${asteroidId}`;
                     searchDescription = `Looking up specific asteroid with ID: ${asteroidId}`;
                     break;
                 case 'browse':
-                    backendUrl = `http://localhost:5001/api/asteroids/browse`;
+                    backendUrl = `${BACKEND_BASE_URL}/api/asteroids/browse`;
                     searchDescription = 'Browse general asteroid database';
                     break;
                 default:
@@ -164,7 +168,8 @@ const AsteroidTracker = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [searchType, startDate, endDate, asteroidId, addMissionLogEntry, BACKEND_BASE_URL]);
+
 
     // I'm handling the "Load More" functionality.
     const showMoreAsteroids = () => {
@@ -180,6 +185,7 @@ const AsteroidTracker = () => {
     useEffect(() => {
         addMissionLogEntry('🛰️ Initializing Asteroid Tracker Mission...');
         searchAsteroids();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
